@@ -6,11 +6,11 @@ import os
 class Param:
 
 	def __init__(self):
-		self.rootDir = None					# /usr/lib/vworld
-		self.runDir = None					# /run/vworld
-		self.varDir = None					# /var/vworld
+		self.rootDir = "/usr/lib/vworld" 
+		self.runDir = "/run/vworld"
+		self.varDir = "/var/vworld"
 
-		self.logLevel = None
+		self.logLevel = 0
 
 		self.mainloop = None
 		self.dbusMainObject = None
