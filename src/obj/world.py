@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-class World:
+class World(_ObjBase):
 
 	def __init__(self):
-		pass
+		super(World, self).__init__(None, "0")
 
 	def getDateTime(self):
 		pass
@@ -14,6 +14,12 @@ class World:
 
 	###########################################################################
 
-	@property
-	def stockMarkets(self):
+	def allStockMarkets(self):
 		return []
+
+	def stockMarket(self, name):
+		return dict()
+
+	def techData(self, name, **kwargs):
+		return None
+		

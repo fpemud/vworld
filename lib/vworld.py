@@ -33,12 +33,8 @@ __author__ = "fpemud@sina.com (Fpemud)"
 __version__ = "0.0.1"
 
 
-def isServerRunning():
+def has_service():
 	return False
 
-def getWorld():
+def get_world_instances():
 	return None
-
-
-	
-
