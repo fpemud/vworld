@@ -6,8 +6,8 @@ import sys
 import argparse
 import shutil
 import logging
-sys.path.append(os.path.dirname(__file__))
 from gi.repository import GLib
+sys.path.append("./src")
 from util import util
 from util import pyro
 from param import Param
