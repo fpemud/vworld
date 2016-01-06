@@ -17,9 +17,9 @@ from service import ServiceObject
 
 def getArgParser():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--rundir", required=True)
-	parser.add_argument("--vardir", required=True)
-	util.argParserAddLogLevelArgument(parser, "log_level")
+	parser.add_argument("--rundir")
+	parser.add_argument("--vardir")
+#	util.argParserAddLogLevelArgument(parser, "log_level")
 	return parser
 
 ################################################################################
@@ -28,9 +28,14 @@ param = Param()
 try:
 	args = getArgParser().parse_args()
 	param.rootDir = os.path.dirname(__file__)
-	param.varDir = args.vardir
-	param.runDir = args.rundir
-	param.logLevel = args.log_level
+	if args.vardir is not None and args.rundir is not None:
+		param.varDir = args.vardir
+		param.runDir = args.rundir
+	else:
+		if args.vardir is not None or args.rundir is not None:
+			raise Exception("--rundir and --vardir must be specified simutaneously")
+
+	#param.logLevel = args.log_level
 	
 	util.initLogger(param.logFile, param.logLevel)
 
