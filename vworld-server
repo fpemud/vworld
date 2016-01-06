@@ -17,9 +17,10 @@ from service import ServiceObject
 
 def getArgParser():
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--no-daemon")
 	parser.add_argument("--rundir")
 	parser.add_argument("--vardir")
-#	util.argParserAddLogLevelArgument(parser, "log_level")
+	util.argParserAddLogLevelArgument(parser, "log_level")
 	return parser
 
 ################################################################################
