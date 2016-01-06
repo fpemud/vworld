@@ -34,9 +34,6 @@ classif = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
-print(distutils.sysconfig.PREFIX)
-print(distutils.sysconfig.get_config_vars())
-
 # setup vworld module
 setup(
     name='vworld',
