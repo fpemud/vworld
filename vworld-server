@@ -11,8 +11,8 @@ sys.path.append("./src")
 from util import util
 from util import pyro
 from param import Param
-from world_db import WorldDatabase
-from data_source import DataSource
+#from world_db import WorldDatabase
+#from data_source import DataSource
 from service import ServiceObject
 
 def getArgParser():

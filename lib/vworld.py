@@ -36,5 +36,5 @@ __version__ = "0.0.1"
 def has_service():
 	return False
 
-def get_world_instances():
+def get_world_instances(startDatetime=None):
 	return None
