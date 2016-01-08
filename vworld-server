@@ -7,63 +7,66 @@ import argparse
 import shutil
 import logging
 from gi.repository import GLib
+from dbus.mainloop.glib import DBusGMainLoop
 sys.path.append("./src")
 from util import util
 from param import Param
 from api_control import DbusMainObject
 from api_business import PyroMainObject
 
-def getArgParser():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("--nodaemon")
-	parser.add_argument("--port", type=int)
-	parser.add_argument("--rundir")
-	parser.add_argument("--vardir")
-	util.argParserAddLogLevelArgument(parser, "log_level")
-	return parser
 
-################################################################################
+def getArgParser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--nodaemon")
+    parser.add_argument("--port", type=int)
+    parser.add_argument("--rundir")
+    parser.add_argument("--vardir")
+    util.argParserAddLogLevelArgument(parser, "log_level")
+    return parser
+
+##########################################################################
 
 param = Param()
 try:
-	args = getArgParser().parse_args()
-	if args.vardir is not None and args.rundir is not None:
-		param.varDir = args.vardir
-		param.runDir = args.rundir
-	else:
-		if args.vardir is not None or args.rundir is not None:
-			raise Exception("--rundir and --vardir must be specified simutaneously")
-	if args.nodaemon is not None:
-		param.daemonize = False
-	if args.port is not None:
-		param.port = args.port
-	#param.logLevel = args.log_level
-	
-	util.initLogger(param.logFile, param.logLevel)
+    args = getArgParser().parse_args()
+    if args.vardir is not None and args.rundir is not None:
+        param.varDir = args.vardir
+        param.runDir = args.rundir
+    else:
+        if args.vardir is not None or args.rundir is not None:
+            raise Exception(
+                "--rundir and --vardir must be specified simutaneously")
+    if args.nodaemon is not None:
+        param.daemonize = False
+    if args.port is not None:
+        param.port = args.port
+    # param.logLevel = args.log_level
 
-	#logging.info("Open world database in %s."%(param.worldDbDir))
-	#if not os.path.exists(param.worldDbDir):
-	#	os.makedirs(param.worldDbDir)
-	#param.worldDb = WorldDatabase(param.worldDbDir)
+    util.initLogger(param.logFile, param.logLevel)
 
-	logging.info("Publish control interface.")
+    # logging.info("Open world database in %s."%(param.worldDbDir))
+    # if not os.path.exists(param.worldDbDir):
+    #    os.makedirs(param.worldDbDir)
+    # param.worldDb = WorldDatabase(param.worldDbDir)
+
+    logging.info("Publish control interface.")
     DBusGMainLoop(set_as_default=True)
     param.dbusMainObject = DbusMainObject(param)
 
-	logging.info("Publish business interface.")
-	param.pyroServer = util.PyroServer(param.port)
+    logging.info("Publish business interface.")
+    param.pyroServer = util.PyroServer(param.port)
     param.pyroMainObject = PyroMainObject(param)
-	param.pyroServer.register("mainobj", param.pyroMainObject)
+    param.pyroServer.register("mainobj", param.pyroMainObject)
 
-	logging.info("Main loop starts.")
-	param.mainloop = GLib.MainLoop()
-	param.pyroServer.attach(param.mainloop)
-	param.mainloop.run()
+    logging.info("Main loop starts.")
+    param.mainloop = GLib.MainLoop()
+    param.pyroServer.attach(param.mainloop)
+    param.mainloop.run()
 
-	logging.info("Main loop exits.")
+    logging.info("Main loop exits.")
 finally:
-	if param.worldDb is not None:
-		param.worldDb.close()
-	if os.path.exists(param.runDir):
-		shutil.rmtree(param.runDir)
-	logging.shutdown()
+    if param.worldDb is not None:
+        param.worldDb.close()
+    if os.path.exists(param.runDir):
+        shutil.rmtree(param.runDir)
+    logging.shutdown()

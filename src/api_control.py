@@ -86,10 +86,7 @@ class DbusMainObject(dbus.service.Object):
         if self.fetchProgress != 100:
             raise VWorldException("history fetching in progress")
         self.fetchProgress = -1
-        
+
     @dbus.service.method('org.fpemud.VWorldServer', out_signature='s')
     def GetLatestDateTime(self):
         return "1970-01-01"
-        
-        
-        
