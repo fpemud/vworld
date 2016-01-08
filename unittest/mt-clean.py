@@ -56,3 +56,7 @@ if __name__ == "__main__":
     os.mkdir("./fakeroot")
     os.mkdir("./fakeroot/run")
     os.mkdir("./fakeroot/var")
+    with open("./fakeroot/run/.keep", "w") as f:
+        pass
+    with open("./fakeroot/var/.keep", "w") as f:
+        pass

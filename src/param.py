@@ -6,10 +6,12 @@ import os
 class Param:
 
 	def __init__(self):
-		self.rootDir = "/usr/lib/vworld" 
+		self.libDir = os.path.dirname(__file__)
 		self.runDir = "/run/vworld"
 		self.varDir = "/var/vworld"
 
+		self.port = 3777
+		self.daemonize = True
 		self.logLevel = 0
 
 		self.mainloop = None
@@ -19,16 +21,8 @@ class Param:
 		self.worldDb = None
 
 	@property
-	def moduleName(self):
-		return "proc_world"
-
-	@property
 	def worldDbDir(self):
 		return os.path.join(self.varDir, "world")						# /var/tsking/world
-
-	@property
-	def pubFile(self):
-		return os.path.join(self.runDir, self.moduleName, "pub")		# /run/vworld/socket
 
 	@property
 	def logFile(self):

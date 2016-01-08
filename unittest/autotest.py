@@ -7,17 +7,14 @@ import shutil
 import unittest
 
 curDir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(curDir, "../lib"))
+sys.path.insert(0, os.path.join(curDir, "../src"))
 
-import testsuit_fm_util
+import autotest_tsuit_util
 
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(testsuit_fm_util.Test_getMakeConfVar())
-    suite.addTest(testsuit_fm_util.Test_setMakeConfVar())
-    suite.addTest(testsuit_fm_util.Test_removeMakeConfVar_001())
-    suite.addTest(testsuit_fm_util.Test_removeMakeConfVar_002())
+    suite.addTest(autotest_tsuit_util.TestPyroServer())
     return suite
 
 if __name__ == "__main__":
