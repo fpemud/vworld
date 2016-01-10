@@ -106,7 +106,7 @@ class util:
 
         def __init__(self, ipaddr, port, ssl=False):
             self.serverObj = Soup.Server()
-            self.serverObj.listen(Gio.InetSocketAddress.new_from_string(ipaddr, port))
+            self.serverObj.listen(Gio.InetSocketAddress.new_from_string(ipaddr, port), 0)
 
         def attach(self, mainloop):
             pass
