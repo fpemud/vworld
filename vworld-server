@@ -19,8 +19,9 @@ def getArgParser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--nodaemon")
     parser.add_argument("--port", type=int)
-    parser.add_argument("--rundir")
     parser.add_argument("--vardir")
+    parser.add_argument("--rundir")
+    parser.add_argument("--logdir")
     util.argParserAddLogLevelArgument(parser, "log_level")
     return parser
 
@@ -29,18 +30,19 @@ def getArgParser():
 param = Param()
 try:
     args = getArgParser().parse_args()
-    if args.vardir is not None and args.rundir is not None:
+    if args.vardir is not None and args.rundir is not None and args.logdir is not None:
         param.varDir = args.vardir
         param.runDir = args.rundir
+        param.logDir = args.logdir
     else:
-        if args.vardir is not None or args.rundir is not None:
-            raise Exception(
-                "--rundir and --vardir must be specified simutaneously")
+        if args.vardir is not None or args.rundir is not None or args.logdir is not None:
+            raise Exception("--vardir, --rundir and --logdir must be specified simutaneously")
     if args.nodaemon is not None:
         param.daemonize = False
     if args.port is not None:
         param.port = args.port
-    # param.logLevel = args.log_level
+    if args.log_level is not None:
+        param.logLevel = args.log_level
 
     util.initLogger(param.logFile, param.logLevel)
 

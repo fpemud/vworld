@@ -1,7 +1,7 @@
 PACKAGE_VERSION=0.0.1
 prefix=/usr
 
-SUBDIRS=src src/objs src/util
+SUBDIRS=src src/objs src/util unittest
 
 clean:
 	@for dir in $(SUBDIRS) ; do rm -rf "$$dir/__pycache__" clean ; done

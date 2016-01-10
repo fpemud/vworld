@@ -10,10 +10,11 @@ class Param:
         self.libDir = os.path.dirname(__file__)
         self.runDir = "/run/vworld"
         self.varDir = "/var/vworld"
+        self.logDir = "/var/log/vworld"
 
         self.port = 3777
         self.daemonize = True
-        self.logLevel = 0
+        self.logLevel = "ERROR"
 
         self.mainloop = None
         self.dbusMainObject = None
@@ -21,10 +22,10 @@ class Param:
         self.dataSource = None
         self.worldDb = None
 
-    @property
-    def worldDbDir(self):
-        return os.path.join(self.varDir, "world")						# /var/tsking/world
+#    @property
+#    def worldDbDir(self):
+#        return os.path.join(self.varDir, "world")		# /var/vworld/world
 
     @property
     def logFile(self):
-        return os.path.join(self.varDir, self.moduleName, "log")		# /var/tsking/proc_world/log
+        return os.path.join(self.logDir, "vworld-server.log")	  # /var/vworld/log/vworld-server.log

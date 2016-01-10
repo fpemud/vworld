@@ -4,8 +4,9 @@
 import os
 import time
 import shutil
-import tempfile
+import subprocess
 import unittest
+import Pyro4
 from util import util
 
 class TestPyroServer(unittest.TestCase):
@@ -14,6 +15,7 @@ class TestPyroServer(unittest.TestCase):
         self.serverPort = util.getFreeTcpPort()
 
         buf = ""
+        buf += "import sys\n"
         buf += "from gi.repository import GLib\n"
         buf += "sys.path.append(\"../src\")\n"
         buf += "from util import util\n"
@@ -24,7 +26,7 @@ class TestPyroServer(unittest.TestCase):
         buf += "\n"
         buf += "mainloop = GLib.MainLoop()\n"
         buf += "\n"
-    	buf += "pyroServer = util.PyroServer(%d)\n" % (port)
+        buf += "pyroServer = util.PyroServer(%d)\n" % (self.serverPort)
         buf += "pyroServer.register(\"main\", ServiceObject())\n"
         buf += "pyroServer.attach(mainloop)\n"
         buf += "\n"
@@ -32,14 +34,14 @@ class TestPyroServer(unittest.TestCase):
         with open("./_test_server.py", "w") as f:
             f.write(buf)
 
-        proc = subprocess.Open("python3 ./_test_server.py", shell=True, universal_newlines=True)
+        self.serverProc = subprocess.Popen("python3 ./_test_server.py", shell=True, universal_newlines=True)
         time.sleep(1)
 
     def runTest(self):
         obj = Pyro4.Proxy("PYRO:main@localhost:%d" % (self.serverPort))
-        assertEqual(obj.method(), 100)
+        self.assertEqual(obj.method(), 100)
 
     def tearDown(self):
-        proc.terminate()
-        proc.wait()
+        self.serverProc.terminate()
+        self.serverProc.wait()
         os.unlink("./_test_server.py")
