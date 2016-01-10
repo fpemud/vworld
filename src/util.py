@@ -101,10 +101,8 @@ class util:
             self.pyroDaemon.events([socket])
             return True
 
-     class HttpServer:
+    class HttpServer:
         pass
-        
-     class HttpsServer:
+
+    class HttpsServer:
         pass
-        
-        

@@ -15,9 +15,10 @@ class TestPyroServer(unittest.TestCase):
         self.serverPort = util.getFreeTcpPort()
 
         buf = ""
+        buf += "import os\n"
         buf += "import sys\n"
         buf += "from gi.repository import GLib\n"
-        buf += "sys.path.append(\"../src\")\n"
+        buf += "sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), \"src\"))\n"
         buf += "from util import util\n"
         buf += "\n"
         buf += "class ServiceObject:\n"

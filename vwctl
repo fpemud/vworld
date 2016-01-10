@@ -2,6 +2,7 @@
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 import dbus
+import time
 import argparse
 
 
@@ -60,7 +61,7 @@ def fetch_history():
     dbusObj = dbus.SystemBus().get_object('org.fpemud.VWorld', '/org/fpemud/VWorld')
     if dbusObj.GetHistoryFetchingProgress()[0] != -1:
         raise Exception("history fetching in progress")
-        
+
     dbusObj.FetchHistory()
     try:
         while True:
