@@ -12,13 +12,15 @@ class Param:
         self.varDir = "/var/vworld"
         self.logDir = "/var/log/vworld"
 
-        self.port = 3777
         self.daemonize = True
         self.logLevel = "ERROR"
 
+        self.portPyro = 3777
+        self.pyroServer = None
+
         self.mainloop = None
         self.dbusMainObject = None
-        self.pyroServer = None
+        self.pyroMainObject = None
         self.dataSource = None
         self.worldDb = None
 

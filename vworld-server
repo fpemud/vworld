@@ -8,7 +8,8 @@ import shutil
 import logging
 from gi.repository import GLib
 from dbus.mainloop.glib import DBusGMainLoop
-sys.path.append("./src")
+curDir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(curDir, "src"))
 from util import util
 from param import Param
 from api_control import DbusMainObject
@@ -18,10 +19,10 @@ from api_business import PyroMainObject
 def getArgParser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--nodaemon")
-    parser.add_argument("--port", type=int)
-    parser.add_argument("--vardir")
-    parser.add_argument("--rundir")
-    parser.add_argument("--logdir")
+    parser.add_argument("--pyro-port", type=int, help="Set the port on which vworl-server do pyro communication")
+    parser.add_argument("--vardir", help="Set var directory, defaults to /var/vworld")
+    parser.add_argument("--rundir", help="Set run directory, defaults to /run/vworld")
+    parser.add_argument("--logdir", help="Set log directory, defaults to /var/log/vworld")
     util.argParserAddLogLevelArgument(parser, "log_level")
     return parser
 
@@ -39,8 +40,8 @@ try:
             raise Exception("--vardir, --rundir and --logdir must be specified simutaneously")
     if args.nodaemon is not None:
         param.daemonize = False
-    if args.port is not None:
-        param.port = args.port
+    if args.pyro_port is not None:
+        param.portPyro = args.pyro_port
     if args.log_level is not None:
         param.logLevel = args.log_level
 
@@ -56,7 +57,7 @@ try:
     param.dbusMainObject = DbusMainObject(param)
 
     logging.info("Publish business interface.")
-    param.pyroServer = util.PyroServer(param.port)
+    param.pyroServer = util.PyroServer(param.portPyro)
     param.pyroMainObject = PyroMainObject(param)
     param.pyroServer.register("mainobj", param.pyroMainObject)
 

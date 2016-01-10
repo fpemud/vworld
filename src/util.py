@@ -14,7 +14,7 @@ class util:
     @staticmethod
     def argParserAddLogLevelArgument(parser, destVar):
         parser.add_argument("--log-level", dest=destVar,
-                            choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NONE'], required=True,
+                            choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NONE'],
                             help="Set output log message level")
 
     @staticmethod
@@ -24,7 +24,7 @@ class util:
         if not os.path.exists(os.path.dirname(logFile)):
             os.makedirs(os.path.dirname(logFile))
         logging.getLogger().addHandler(logging.FileHandler(logFile))
-        logging.getLogger().setLevel(_getLoggingLevel(logLevel))
+        logging.getLogger().setLevel(util._getLoggingLevel(logLevel))
 
     @staticmethod
     def _getLoggingLevel(logLevel):

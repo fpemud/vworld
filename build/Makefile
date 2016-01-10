@@ -8,7 +8,7 @@ clean:
 
 install:
 	install -d -m 0755 "$(DESTDIR)/$(prefix)/sbin"
-	sed "s/sys.path.append(\".\\/src\")/sys.path.append(\"\\/usr\\/lib\\/vworld-server\")/g" vworld-server > "$(DESTDIR)/$(prefix)/sbin/vworld-server"
+	sed "s/sys.path.append(os.path.join(curDir, \"src\"))/sys.path.append(\"\\/usr\\/lib\\/vworld-server\")/g" vworld-server > "$(DESTDIR)/$(prefix)/sbin/vworld-server"
 	chmod 0755 "$(DESTDIR)/$(prefix)/sbin/vworld-server"
 
 	install -d -m 0755 "$(DESTDIR)/$(prefix)/bin"

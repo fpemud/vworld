@@ -8,6 +8,10 @@ import shutil
 import subprocess
 
 
+def getExecDir():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def getProcessId(execName):
     proc = subprocess.Popen("/bin/ps -A", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     out = proc.communicate()[0]
@@ -50,13 +54,7 @@ if __name__ == "__main__":
     if getProcessId("vworld-server") is not None:
         killProcess("vworld-server")
 
-    print("Resetting directory ./fakeroot")
-    if os.path.exists("./fakeroot"):
-        shutil.rmtree("./fakeroot")
-    os.mkdir("./fakeroot")
-    os.mkdir("./fakeroot/run")
-    os.mkdir("./fakeroot/var")
-    with open("./fakeroot/run/.keep", "w") as f:
-        pass
-    with open("./fakeroot/var/.keep", "w") as f:
-        pass
+    print("Remove fakeroot directory")
+    fakeRootDir = os.path.join(getExecDir(), "fakeroot")
+    if os.path.exists(fakeRootDir):
+        shutil.rmtree(fakeRootDir)
