@@ -19,7 +19,7 @@ def parseArgs():
     ap3 = subParsers.add_parser("stop-receiving")
     ap3.set_defaults(subcmd="stop_recv")
 
-    ap4 = subParsers.add_parser("fetch")
+    ap4 = subParsers.add_parser("fetch-history")
     ap4.set_defaults(subcmd="fetch_history")
 
     return argParser.parse_args()
@@ -31,9 +31,9 @@ def show_info():
     progress, stage = dbusObj.GetHistoryFetchingProgress()
 
     if bRecv:
-        bRecv = "Yes"
+        bRecv = "Enabled"
     else:
-        bRecv = "No"
+        bRecv = "Not Enabled"
     print("Data Receiving:    %s" % (bRecv))
 
     if progress == -1:
@@ -70,9 +70,9 @@ def fetch_history():
             print("Progress: %d%%, %s" % (progress, stage))
             if progress == 100:
                 break
-        dbus.ResetHistoryFetchingProgress()
+        dbusObj.ResetHistoryFetchingProgress()
     except:
-        dbus.CancelHistoryFetching()
+        dbusObj.CancelHistoryFetching()
 
 
 if __name__ == "__main__":
