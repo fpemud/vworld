@@ -7,7 +7,9 @@ import time
 import logging
 import socket
 import Pyro4
-from gi.repository import GLib
+import gi
+gi.require_version('Soup', '2.4')
+from gi.repository import Gio, GLib, Soup
 
 
 class util:
@@ -83,9 +85,8 @@ class util:
 
     class PyroServer:
 
-        def __init__(self, port):
-            self.port = port
-            self.pyroDaemon = Pyro4.Daemon(port=self.port)
+        def __init__(self, ipaddr, port):
+            self.pyroDaemon = Pyro4.Daemon(ipaddr, port)
 
         def attach(self, mainloop):
             GLib.io_add_watch(self.pyroDaemon.sockets[0], GLib.IO_IN, self._handleEvent)
@@ -102,7 +103,17 @@ class util:
             return True
 
     class HttpServer:
-        pass
 
-    class HttpsServer:
-        pass
+        def __init__(self, ipaddr, port, ssl=False):
+            self.serverObj = Soup.Server()
+            self.serverObj.listen(Gio.InetSocketAddress.new_from_string(ipaddr, port))
+
+        def attach(self, mainloop):
+            pass
+
+        def addHandler(self, path, handler):
+            pass
+
+        def removeHandler(self, method, path):
+            """no remove needed currently"""
+            assert False

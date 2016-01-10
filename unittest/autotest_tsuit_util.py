@@ -27,7 +27,7 @@ class TestPyroServer(unittest.TestCase):
         buf += "\n"
         buf += "mainloop = GLib.MainLoop()\n"
         buf += "\n"
-        buf += "pyroServer = util.PyroServer(%d)\n" % (self.serverPort)
+        buf += "pyroServer = util.PyroServer(\"127.0.0.1\", %d)\n" % (self.serverPort)
         buf += "pyroServer.register(\"main\", ServiceObject())\n"
         buf += "pyroServer.attach(mainloop)\n"
         buf += "\n"

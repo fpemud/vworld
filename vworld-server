@@ -13,6 +13,7 @@ sys.path.append(os.path.join(curDir, "src"))
 from util import util
 from param import Param
 from api_control_dbus import DbusMainObject
+from api_control_web import WebController
 from api_business import PyroMainObject
 
 
@@ -55,14 +56,18 @@ try:
     logging.info("Publish control interface.")
     DBusGMainLoop(set_as_default=True)
     param.dbusMainObject = DbusMainObject(param)
+    param.webController = WebController(param)
+    param.httpServer = util.HttpServer("127.0.0.1", param.portHttp)
+    param.httpServer.addHandler("/", param.webController)
 
     logging.info("Publish business interface.")
-    param.pyroServer = util.PyroServer(param.portPyro)
+    param.pyroServer = util.PyroServer("0.0.0.0", param.portPyro)
     param.pyroMainObject = PyroMainObject(param)
     param.pyroServer.register("mainobj", param.pyroMainObject)
 
     logging.info("Main loop starts.")
     param.mainloop = GLib.MainLoop()
+    param.httpServer.attach(param.mainloop)
     param.pyroServer.attach(param.mainloop)
     param.mainloop.run()
 
