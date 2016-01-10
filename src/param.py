@@ -12,10 +12,13 @@ class Param:
         self.varDir = "/var/vworld"
         self.logDir = "/var/log/vworld"
 
-        self.daemonize = True
-        self.logLevel = "ERROR"
+        self.portHttp = 3776
+        self.portHttps = 3777
+        self.portPyro = 3778
 
-        self.portPyro = 3777
+        self.daemonize = True
+        self.logLevel = "INFO"
+
         self.pyroServer = None
 
         self.mainloop = None

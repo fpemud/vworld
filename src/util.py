@@ -2,6 +2,7 @@
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 import os
+import sys
 import time
 import logging
 import socket
@@ -18,13 +19,17 @@ class util:
                             help="Set output log message level")
 
     @staticmethod
-    def initLogger(logFile, logLevel):
+    def initLogger(daemonize, logFile, logLevel):
         if logLevel == 'NONE':
             return
-        if not os.path.exists(os.path.dirname(logFile)):
-            os.makedirs(os.path.dirname(logFile))
-        logging.getLogger().addHandler(logging.FileHandler(logFile))
+
         logging.getLogger().setLevel(util._getLoggingLevel(logLevel))
+        if daemonize:
+            if not os.path.exists(os.path.dirname(logFile)):
+                os.makedirs(os.path.dirname(logFile))
+            logging.getLogger().addHandler(logging.FileHandler(logFile))
+        else:
+            logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     @staticmethod
     def _getLoggingLevel(logLevel):
@@ -95,3 +100,11 @@ class util:
         def _handleEvent(self, socket, *args):
             self.pyroDaemon.events([socket])
             return True
+
+     class HttpServer:
+        pass
+        
+     class HttpsServer:
+        pass
+        
+        

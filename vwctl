@@ -1,2 +1,88 @@
 #!/usr/bin/python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
+
+import dbus
+import argparse
+
+
+def parseArgs():
+    argParser = argparse.ArgumentParser()
+    subParsers = argParser.add_subparsers()
+
+    ap1 = subParsers.add_parser("show")
+    ap1.set_defaults(subcmd="show_info")
+
+    ap2 = subParsers.add_parser("start-receiving")
+    ap2.set_defaults(subcmd="start_recv")
+
+    ap3 = subParsers.add_parser("stop-receiving")
+    ap3.set_defaults(subcmd="stop_recv")
+
+    ap4 = subParsers.add_parser("fetch")
+    ap4.set_defaults(subcmd="fetch_history")
+
+    return argParser.parse_args()
+
+
+def show_info():
+    dbusObj = dbus.SystemBus().get_object('org.fpemud.VWorld', '/org/fpemud/VWorld')
+    bRecv = dbusObj.IsReceiving()
+    progress, stage = dbusObj.GetHistoryFetchingProgress()
+
+    if bRecv:
+        bRecv = "Yes"
+    else:
+        bRecv = "No"
+    print("Data Receiving:    %s" % (bRecv))
+
+    if progress == -1:
+        progress = "Not Fetching"
+    else:
+        progress = "%d%%" % (progress)
+    print("History Fetching:  %s" % (progress))
+
+
+def start_recv():
+    dbusObj = dbus.SystemBus().get_object('org.fpemud.VWorld', '/org/fpemud/VWorld')
+    if dbusObj.IsReceiving():
+        raise Exception("already receiving data")
+    dbusObj.StartReceiving()
+
+
+def stop_recv():
+    dbusObj = dbus.SystemBus().get_object('org.fpemud.VWorld', '/org/fpemud/VWorld')
+    if not dbusObj.IsReceiving():
+        raise Exception("not receiving data")
+    dbusObj.StopReceiving()
+
+
+def fetch_history():
+    dbusObj = dbus.SystemBus().get_object('org.fpemud.VWorld', '/org/fpemud/VWorld')
+    if dbusObj.GetHistoryFetchingProgress()[0] != -1:
+        raise Exception("history fetching in progress")
+        
+    dbusObj.FetchHistory()
+    try:
+        while True:
+            time.sleep(1.0)
+            progress, stage = dbusObj.GetHistoryFetchingProgress()
+            print("Progress: %d%%, %s" % (progress, stage))
+            if progress == 100:
+                break
+        dbus.ResetHistoryFetchingProgress()
+    except:
+        dbus.CancelHistoryFetching()
+
+
+if __name__ == "__main__":
+    parseResult = parseArgs()
+    if parseResult.subcmd == "show_info":
+        show_info()
+    elif parseResult.subcmd == "start_recv":
+        start_recv()
+    elif parseResult.subcmd == "stop_recv":
+        stop_recv()
+    elif parseResult.subcmd == "fetch_history":
+        fetch_history()
+    else:
+        assert False

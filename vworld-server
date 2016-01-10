@@ -12,17 +12,17 @@ curDir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(curDir, "src"))
 from util import util
 from param import Param
-from api_control import DbusMainObject
+from api_control_dbus import DbusMainObject
 from api_business import PyroMainObject
 
 
 def getArgParser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--nodaemon")
-    parser.add_argument("--pyro-port", type=int, help="Set the port on which vworl-server do pyro communication")
-    parser.add_argument("--vardir", help="Set var directory, defaults to /var/vworld")
-    parser.add_argument("--rundir", help="Set run directory, defaults to /run/vworld")
-    parser.add_argument("--logdir", help="Set log directory, defaults to /var/log/vworld")
+    parser.add_argument("--no-daemon", action="store_true", help="Do not daemonize.")
+    parser.add_argument("--pyro-port", type=int, help="Set the port on which vworl-server do pyro communication.")
+    parser.add_argument("--vardir", help="Set var directory, defaults to /var/vworld.")
+    parser.add_argument("--rundir", help="Set run directory, defaults to /run/vworld.")
+    parser.add_argument("--logdir", help="Set log directory, defaults to /var/log/vworld.")
     util.argParserAddLogLevelArgument(parser, "log_level")
     return parser
 
@@ -38,14 +38,14 @@ try:
     else:
         if args.vardir is not None or args.rundir is not None or args.logdir is not None:
             raise Exception("--vardir, --rundir and --logdir must be specified simutaneously")
-    if args.nodaemon is not None:
+    if args.no_daemon is not None:
         param.daemonize = False
     if args.pyro_port is not None:
         param.portPyro = args.pyro_port
     if args.log_level is not None:
         param.logLevel = args.log_level
 
-    util.initLogger(param.logFile, param.logLevel)
+    util.initLogger(param.daemonize, param.logFile, param.logLevel)
 
     # logging.info("Open world database in %s."%(param.worldDbDir))
     # if not os.path.exists(param.worldDbDir):
