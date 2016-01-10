@@ -4,6 +4,7 @@
 import os
 import sys
 import time
+import dbus
 import logging
 import socket
 import Pyro4
@@ -83,6 +84,23 @@ class util:
                 s.close()
         raise Exception("No valid tcp port in [%d,%d]." % (10000, 65536))
 
+    class DbusServer:
+
+        def __init__(self):
+            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+
+        def attach(self, mainloop):
+            # dbus attaches to the default GLib mainloop automatically
+            pass
+
+        def register(self, obj):
+            # deriving from dbus.service.Object is enough for a dbus object
+            pass
+
+        def unregister(self, name):
+            """no unregister needed currently"""
+            assert False
+
     class PyroServer:
 
         def __init__(self, ipaddr, port):
@@ -109,6 +127,7 @@ class util:
             self.serverObj.listen(Gio.InetSocketAddress.new_from_string(ipaddr, port), 0)
 
         def attach(self, mainloop):
+            # libsoup attaches to the default GLib mainloop automatically
             pass
 
         def addHandler(self, path, handler):

@@ -7,20 +7,20 @@ import argparse
 import shutil
 import logging
 from gi.repository import GLib
-from dbus.mainloop.glib import DBusGMainLoop
 curDir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(curDir, "src"))
 from util import util
 from param import Param
 from api_control_dbus import DbusMainObject
-from api_control_web import WebController
+from api_control_web import WebMainObject
 from api_business import PyroMainObject
 
 
 def getArgParser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-daemon", action="store_true", help="Do not daemonize.")
-    parser.add_argument("--pyro-port", type=int, help="Set the port on which vworl-server do pyro communication.")
+    parser.add_argument("--pyro", help="Set the <address:port> on which vworl-server uses for PYRO communication.")
+    parser.add_argument("--http", help="Set the <address:port> on which vworl-server uses for HTTP controler interface.")
     parser.add_argument("--vardir", help="Set var directory, defaults to /var/vworld.")
     parser.add_argument("--rundir", help="Set run directory, defaults to /run/vworld.")
     parser.add_argument("--logdir", help="Set log directory, defaults to /var/log/vworld.")
@@ -41,8 +41,18 @@ try:
             raise Exception("--vardir, --rundir and --logdir must be specified simutaneously")
     if args.no_daemon is not None:
         param.daemonize = False
-    if args.pyro_port is not None:
-        param.portPyro = args.pyro_port
+    if args.pyro is not None:
+        r = args.pyro.split(":")
+        if len(r) != 2:
+            raise Exception("--pyro should have format <address:port>")
+        param.pyroAddr = r[0]
+        param.pyroPort = r[1]
+    if args.http is not None:
+        r = args.http.split(":")
+        if len(r) != 2:
+            raise Exception("--http should have format <address:port>")
+        param.httpAddr = r[0]
+        param.httpPort = r[1]
     if args.log_level is not None:
         param.logLevel = args.log_level
 
@@ -53,16 +63,19 @@ try:
     #    os.makedirs(param.worldDbDir)
     # param.worldDb = WorldDatabase(param.worldDbDir)
 
-    logging.info("Publish control interface.")
-    DBusGMainLoop(set_as_default=True)
+    logging.info("Publish dbus control interface.")
     param.dbusMainObject = DbusMainObject(param)
-    param.webController = WebController(param)
-    param.httpServer = util.HttpServer("127.0.0.1", param.portHttp)
-    param.httpServer.addHandler("/", param.webController)
+    param.dbusServer = util.DBusServer()
+    param.dbusServer.register(param.dbusMainObject)
+
+    logging.info("Publish web control interface.")
+    param.webMainObject = WebMainObject(param)
+    param.httpServer = util.HttpServer(param.httpAddr, param.httpPort)
+    param.httpServer.addHandler("/", param.webMainObject)
 
     logging.info("Publish business interface.")
-    param.pyroServer = util.PyroServer("0.0.0.0", param.portPyro)
     param.pyroMainObject = PyroMainObject(param)
+    param.pyroServer = util.PyroServer(param.pyroAddr, param.pyroPort)
     param.pyroServer.register("mainobj", param.pyroMainObject)
 
     logging.info("Main loop starts.")

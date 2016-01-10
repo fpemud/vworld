@@ -12,18 +12,21 @@ class Param:
         self.varDir = "/var/vworld"
         self.logDir = "/var/log/vworld"
 
-        self.portHttp = 3776
-        self.portPyro = 3777
-
         self.daemonize = True
         self.logLevel = "INFO"
 
-        self.httpServer = None
+        self.httpAddr = "127.0.0.1"
+        self.httpPort = 3776
         self.pyroServer = None
 
-        self.mainloop = None
+        self.pyroAddr = "127.0.0.1"
+        self.pyroPort = 3777
+        self.httpServer = None
+
         self.dbusMainObject = None
-        self.webController = None
+
+        self.mainloop = None
+        self.webMainObject = None
         self.pyroMainObject = None
         self.dataSource = None
         self.worldDb = None
