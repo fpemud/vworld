@@ -50,9 +50,6 @@ class DbusMainObject(dbus.service.Object):
         bus_name = dbus.service.BusName('org.fpemud.VWorld', bus=dbus.SystemBus())
         dbus.service.Object.__init__(self, bus_name, '/org/fpemud/VWorld')
 
-        # for handling client process termination
-        self.handle = dbus.SystemBus().add_signal_receiver(self.onNameOwnerChanged, 'NameOwnerChanged', None, None)
-
     def release(self):
         dbus.SystemBus().remove_signal_receiver(self.handle)
 
