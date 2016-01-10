@@ -19,6 +19,9 @@ install:
 	find "$(DESTDIR)/$(prefix)/lib/vworld-server" -type f | xargs chmod 644
 	find "$(DESTDIR)/$(prefix)/lib/vworld-server" -type d | xargs chmod 755
 
+	install -d -m 0755 "$(DESTDIR)/etc/dbus-1/system.d"
+	install -m 0644 data/org.fpemud.VWorld.conf "$(DESTDIR)/etc/dbus-1/system.d"
+
 uninstall:
 	rm -Rf "$(DESTDIR)/$(prefix)/bin/vwctl"
 	rm -Rf "$(DESTDIR)/$(prefix)/sbin/vworld-server"

@@ -12,8 +12,8 @@ from gi.repository import GLib
 #
 #
 # ==== Main Application ====
-# Service               org.fpemud.VWorldServer
-# Interface             org.fpemud.VWorldServer
+# Service               org.fpemud.VWorld
+# Interface             org.fpemud.VWorld
 # Object path           /
 #
 # Methods:
@@ -47,8 +47,8 @@ class DbusMainObject(dbus.service.Object):
         self.receiving = False
         self.fetchProgress = -1
 
-        bus_name = dbus.service.BusName('org.fpemud.VWorldServer', bus=dbus.SystemBus())
-        dbus.service.Object.__init__(self, bus_name, '/org/fpemud/VWorldServer')
+        bus_name = dbus.service.BusName('org.fpemud.VWorld', bus=dbus.SystemBus())
+        dbus.service.Object.__init__(self, bus_name, '/org/fpemud/VWorld')
 
         # for handling client process termination
         self.handle = dbus.SystemBus().add_signal_receiver(self.onNameOwnerChanged, 'NameOwnerChanged', None, None)
@@ -56,37 +56,37 @@ class DbusMainObject(dbus.service.Object):
     def release(self):
         dbus.SystemBus().remove_signal_receiver(self.handle)
 
-    @dbus.service.method('org.fpemud.VWorldServer')
+    @dbus.service.method('org.fpemud.VWorld')
     def StartReceiving(self):
         self.receiving = True
 
-    @dbus.service.method('org.fpemud.VWorldServer')
+    @dbus.service.method('org.fpemud.VWorld')
     def StopReceiving(self):
         self.receiving = False
 
-    @dbus.service.method('org.fpemud.VWorldServer', out_signature='b')
+    @dbus.service.method('org.fpemud.VWorld', out_signature='b')
     def IsReceiving(self):
         return self.receiving
 
-    @dbus.service.method('org.fpemud.VWorldServer')
+    @dbus.service.method('org.fpemud.VWorld')
     def FetchHistory(self):
         self.fetchProgress = 100
 
-    @dbus.service.method('org.fpemud.VWorldServer')
+    @dbus.service.method('org.fpemud.VWorld')
     def CancelHistoryFetching(self):
         self.fetchProgress = -1
 
-    @dbus.service.method('org.fpemud.VWorldServer', out_signature='is')
+    @dbus.service.method('org.fpemud.VWorld', out_signature='is')
     def GetHistoryFetchingProgress(self):
         # Returns (-1,"") if history fetching is not in progress
         return (self.fetchProgress, "stage")
 
-    @dbus.service.method('org.fpemud.VWorldServer')
+    @dbus.service.method('org.fpemud.VWorld')
     def ResetHistoryFetchingProgress(self):
         if self.fetchProgress != 100:
             raise VWorldException("history fetching in progress")
         self.fetchProgress = -1
 
-    @dbus.service.method('org.fpemud.VWorldServer', out_signature='s')
+    @dbus.service.method('org.fpemud.VWorld', out_signature='s')
     def GetLatestDateTime(self):
         return "1970-01-01"
