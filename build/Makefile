@@ -22,6 +22,9 @@ install:
 	install -d -m 0755 "$(DESTDIR)/etc/dbus-1/system.d"
 	install -m 0644 data/org.fpemud.VWorld.conf "$(DESTDIR)/etc/dbus-1/system.d"
 
+	install -d -m 0755 "$(DESTDIR)/$(prefix)/lib/systemd/system"
+	install -m 0644 data/vworld-server.service "$(DESTDIR)/$(prefix)/lib/systemd/system"
+
 uninstall:
 	rm -Rf "$(DESTDIR)/$(prefix)/bin/vwctl"
 	rm -Rf "$(DESTDIR)/$(prefix)/sbin/vworld-server"

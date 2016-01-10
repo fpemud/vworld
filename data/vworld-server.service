@@ -1,0 +1,13 @@
+[Unit]
+Description=Virtual world service
+After=network.target
+
+[Service]
+Type=dbus
+PIDFile=/run/vworld/vworld-server.pid
+BusName=org.fpemud.VWorld
+ExecStart=/usr/sbin/vworld-server
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
