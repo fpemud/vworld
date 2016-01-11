@@ -3,11 +3,12 @@
 
 import os
 import sys
+import re
 import time
-import dbus
 import logging
 import socket
 import Pyro4
+import dbus.mainloop.glib
 import gi
 gi.require_version('Soup', '2.4')
 from gi.repository import Gio, GLib, Soup
@@ -72,8 +73,8 @@ class util:
             time.sleep(0.1)
 
     @staticmethod
-    def getFreeTcpPort():
-        for port in range(10000, 65536):
+    def getFreeTcpPort(start_port=10000, end_port=65536):
+        for port in range(start_port, end_port):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 s.bind((('', port)))
@@ -82,7 +83,19 @@ class util:
                 continue
             finally:
                 s.close()
-        raise Exception("No valid tcp port in [%d,%d]." % (10000, 65536))
+        raise Exception("No valid tcp port in [%d,%d]." % (start_port, end_port))
+
+    @staticmethod
+    def is_int(s):
+        try:
+            int(s)
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def is_ipaddr(s):
+        return re.match("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+", s)
 
     class DbusServer:
 
@@ -131,8 +144,16 @@ class util:
             pass
 
         def addHandler(self, path, handler):
-            pass
+            self.serverObj.add_handler(path, self._callback, handler)
 
         def removeHandler(self, method, path):
             """no remove needed currently"""
             assert False
+
+        def _callback(self, msg, path, query, client, user_data):
+            if msg.method == Soup.METHOD_GET:
+                user_data.getHandler(path, {})
+            elif msg.method == Soup.METHOD_POST:
+                user_data.postHandler(path, msg.request_body_data)
+            else:
+                msg.set_status(Soup.STATUS_NOT_IMPLEMENTED)

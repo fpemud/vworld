@@ -19,12 +19,15 @@ from api_business import PyroMainObject
 def getArgParser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-daemon", action="store_true", help="Do not daemonize.")
+
     parser.add_argument("--pyro", help="Set the <address:port> on which vworl-server uses for PYRO communication.")
     parser.add_argument("--http", help="Set the <address:port> on which vworl-server uses for HTTP controler interface.")
+
     parser.add_argument("--vardir", help="Set var directory, defaults to /var/vworld.")
     parser.add_argument("--rundir", help="Set run directory, defaults to /run/vworld.")
     parser.add_argument("--logdir", help="Set log directory, defaults to /var/log/vworld.")
     util.argParserAddLogLevelArgument(parser, "log_level")
+
     return parser
 
 ##########################################################################
@@ -45,14 +48,22 @@ try:
         r = args.pyro.split(":")
         if len(r) != 2:
             raise Exception("--pyro should have format <address:port>")
+        if not util.is_ipaddr(r[0]):
+            raise Exception("--pyro should have format <address:port>")
+        if not util.is_int(r[1]):
+            raise Exception("--pyro should have format <address:port>")
         param.pyroAddr = r[0]
-        param.pyroPort = r[1]
+        param.pyroPort = int(r[1])
     if args.http is not None:
         r = args.http.split(":")
         if len(r) != 2:
             raise Exception("--http should have format <address:port>")
+        if not util.is_ipaddr(r[0]):
+            raise Exception("--http should have format <address:port>")
+        if not util.is_int(r[1]):
+            raise Exception("--http should have format <address:port>")
         param.httpAddr = r[0]
-        param.httpPort = r[1]
+        param.httpPort = int(r[1])
     if args.log_level is not None:
         param.logLevel = args.log_level
 
@@ -64,18 +75,18 @@ try:
     # param.worldDb = WorldDatabase(param.worldDbDir)
 
     logging.info("Publish dbus control interface.")
+    param.dbusServer = util.DbusServer()
     param.dbusMainObject = DbusMainObject(param)
-    param.dbusServer = util.DBusServer()
     param.dbusServer.register(param.dbusMainObject)
 
     logging.info("Publish web control interface.")
-    param.webMainObject = WebMainObject(param)
     param.httpServer = util.HttpServer(param.httpAddr, param.httpPort)
+    param.webMainObject = WebMainObject(param)
     param.httpServer.addHandler("/", param.webMainObject)
 
     logging.info("Publish business interface.")
-    param.pyroMainObject = PyroMainObject(param)
     param.pyroServer = util.PyroServer(param.pyroAddr, param.pyroPort)
+    param.pyroMainObject = PyroMainObject(param)
     param.pyroServer.register("mainobj", param.pyroMainObject)
 
     logging.info("Main loop starts.")

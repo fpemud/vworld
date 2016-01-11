@@ -10,12 +10,15 @@ curDir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(curDir, "../src"))
 
 import autotest_tsuit_util
+import autotest_tsuit_vwctl
 
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(autotest_tsuit_util.TestPyroServer())
+    suite.addTest(autotest_tsuit_vwctl.Test1())
     return suite
 
 if __name__ == "__main__":
+    os.chdir(curDir)
     unittest.main(defaultTest='suite')

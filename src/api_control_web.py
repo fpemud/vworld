@@ -7,5 +7,8 @@ class WebMainObject:
     def __init__(self, param):
         self.param = param
 
-    def httpHandler(self):
+    def getHandler(self, path, args):
+        pass
+
+    def postHandler(self, path, data):
         pass
