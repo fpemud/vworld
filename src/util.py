@@ -150,10 +150,11 @@ class util:
             """no remove needed currently"""
             assert False
 
-        def _callback(self, msg, path, query, client, user_data):
-            if msg.method == Soup.METHOD_GET:
-                user_data.getHandler(path, {})
-            elif msg.method == Soup.METHOD_POST:
-                user_data.postHandler(path, msg.request_body_data)
+        def _callback(self, server, msg, path, query, client, user_data):
+            path = os.path.abspath(path)
+            if msg.method == "GET":
+                user_data.getHandler(path, {}, msg)
+            elif msg.method == "POST":
+                user_data.postHandler(path, msg.request_body_data, msg)
             else:
                 msg.set_status(Soup.STATUS_NOT_IMPLEMENTED)

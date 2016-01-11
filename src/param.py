@@ -8,6 +8,7 @@ class Param:
 
     def __init__(self):
         self.libDir = os.path.dirname(__file__)
+        self.webDir = os.path.join(self.libDir, "web")
         self.runDir = "/run/vworld"
         self.varDir = "/var/vworld"
         self.logDir = "/var/log/vworld"
