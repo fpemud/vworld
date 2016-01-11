@@ -77,6 +77,10 @@ def fetch_history():
 
 if __name__ == "__main__":
     parseResult = parseArgs()
+
+    if not dbus.SystemBus().name_has_owner('org.fpemud.VWorld'):
+        raise Exception("vworld-server is not running")
+
     if parseResult.subcmd == "show_info":
         show_info()
     elif parseResult.subcmd == "start_recv":

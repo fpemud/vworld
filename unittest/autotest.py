@@ -17,6 +17,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(autotest_tsuit_util.TestPyroServer())
     suite.addTest(autotest_tsuit_vwctl.Test1())
+    suite.addTest(autotest_tsuit_vwctl.Test2())
     return suite
 
 if __name__ == "__main__":
